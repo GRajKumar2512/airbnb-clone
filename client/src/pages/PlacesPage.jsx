@@ -5,7 +5,7 @@ import axios from "axios";
 
 const PlacesPage = () => {
   const { action } = useParams();
-  const [places, setPlaces] = useState();
+  const [places, setPlaces] = useState({});
 
   useEffect(() => {
     const getPlaces = async () => {
@@ -41,6 +41,31 @@ const PlacesPage = () => {
               </svg>
               Add new place
             </Link>
+          </div>
+
+          <div className="mt-4 max-w-[1440px] mx-auto">
+            {places.length > 0 &&
+              places.map((place) => (
+                <Link
+                  key={place.title}
+                  to={`/account/places/edit/${place._id}`}
+                  className="flex gap-4 cursor-pointer bg-gray-100 p-4 rounded-xl"
+                >
+                  <div className="flex h-32 w-32 bg-gray-300 shrink-0">
+                    {place.photos.length > 0 && (
+                      <img
+                        className="object-cover"
+                        src={`http://localhost:4000/uploads/${place.photos[0]}`}
+                        alt="image"
+                      />
+                    )}
+                  </div>
+                  <div>
+                    <h2 className="text-xl">{place.title}</h2>
+                    <p className="text-sm mt-2">{place.description}</p>
+                  </div>
+                </Link>
+              ))}
           </div>
         </div>
       )}

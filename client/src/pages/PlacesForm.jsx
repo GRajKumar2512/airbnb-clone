@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Perks from "./Perks";
 import axios from "axios";
-import { Navigate } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 
 const PlacesForm = () => {
+  const { id } = useParams();
+
   const [title, setTitle] = useState("");
   const [address, setAddress] = useState("");
   const [addedPhotos, setAddedPhotos] = useState([]);
@@ -15,6 +17,28 @@ const PlacesForm = () => {
   const [checkOut, setCheckOut] = useState("");
   const [maxGuests, setMaxGuests] = useState(1);
   const [redirect, setRedirect] = useState(null);
+  const [price, setPrice] = useState("");
+
+  useEffect(() => {
+    if (!id) {
+      return;
+    }
+
+    axios.get(`/places/${id}`).then((response) => {
+      const { data } = response;
+
+      setTitle(data.title);
+      setAddress(data.address);
+      setAddedPhotos(data.photos);
+      setDescription(data.description);
+      setPerks(data.perks);
+      setExtraInfo(data.extraInfo);
+      setCheckIn(data.checkIn);
+      setCheckOut(data.checkOut);
+      setMaxGuests(data.maxGuests);
+      setPrice(data.price);
+    });
+  }, [id]);
 
   function preInputHeaders(title, description) {
     return (
@@ -58,6 +82,12 @@ const PlacesForm = () => {
     });
   }
 
+  function removePhoto(link) {
+    setAddedPhotos((allphotos) =>
+      allphotos.filter((selectedPhoto) => selectedPhoto !== link)
+    );
+  }
+
   async function handleSubmit(event) {
     event.preventDefault();
 
@@ -71,8 +101,15 @@ const PlacesForm = () => {
       checkIn,
       checkOut,
       maxGuests,
+      price,
     };
-    await axios.post("/places", data);
+
+    if (id) {
+      await axios.put(`/places/${id}`, data);
+    } else {
+      await axios.post("/places", data);
+    }
+
     setRedirect("/account/places");
   }
 
@@ -121,9 +158,14 @@ const PlacesForm = () => {
             Add photo
           </button>
         </div>
-        <div className="mt-2 grid gap-2 grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-          <label className="p-8 border bg-transparent rounded-lg cursor-pointer flex items-center justify-center gap-1">
-            <input type="file" className="hidden" onChange={uploadPhoto} />
+        <div className="mt-2 grid gap-2 grid-cols-3 md:grid-cols-4">
+          <label className="h-32 p-8 border bg-transparent rounded-lg cursor-pointer flex items-center justify-center gap-1">
+            <input
+              type="file"
+              multiple
+              className="hidden"
+              onChange={uploadPhoto}
+            />
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -142,12 +184,29 @@ const PlacesForm = () => {
           </label>
           {addedPhotos.length > 0 &&
             addedPhotos.map((link) => (
-              <div className="object-contain" key={link}>
+              <div className="h-32 flex relative" key={link}>
                 <img
                   src={`http://localhost:4000/uploads/${link}`}
                   alt="image"
-                  className="rounded-lg h-40 w-full"
+                  className="rounded-lg w-full"
                 />
+                <button
+                  onClick={() => removePhoto(link)}
+                  className="absolute bottom-1 right-2 cursor-pointer bg-black bg-opacity-50 p-1 rounded-xl"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="w-6 h-6 text-white"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M16.5 4.478v.227a48.816 48.816 0 013.878.512.75.75 0 11-.256 1.478l-.209-.035-1.005 13.07a3 3 0 01-2.991 2.77H8.084a3 3 0 01-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 01-.256-1.478A48.567 48.567 0 017.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 013.369 0c1.603.051 2.815 1.387 2.815 2.951zm-6.136-1.452a51.196 51.196 0 013.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 00-6 0v-.113c0-.794.609-1.428 1.364-1.452zm-.355 5.945a.75.75 0 10-1.5.058l.347 9a.75.75 0 101.499-.058l-.346-9zm5.48.058a.75.75 0 10-1.498-.058l-.347 9a.75.75 0 001.5.058l.345-9z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </button>
               </div>
             ))}
         </div>
@@ -174,7 +233,7 @@ const PlacesForm = () => {
           "Check in & out times, max guests",
           "Remember to have a time window to clean rooms"
         )}
-        <div className="grid sm:grid-cols-3 gap-2 mt-2">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2">
           <div>
             <h3>Check In time</h3>
             <input
@@ -200,6 +259,15 @@ const PlacesForm = () => {
               placeholder="4"
               value={maxGuests}
               onChange={(e) => setMaxGuests(e.target.value)}
+            />
+          </div>
+          <div>
+            <h3>Price</h3>
+            <input
+              type="number"
+              placeholder="Rs 1999"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
             />
           </div>
         </div>

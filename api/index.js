@@ -13,6 +13,7 @@ import logoutRoute from "./routes/logout.js";
 import uploadLinkRoute from "./routes/upload-by-link.js";
 import uploadRoute from "./routes/upload.js";
 import placesRoute from "./routes/places.js";
+import allPlaceRoute from "./routes/all-places.js";
 
 const app = express();
 
@@ -43,6 +44,7 @@ app.use("/logout", logoutRoute);
 app.use("/upload-by-link", uploadLinkRoute);
 app.use("/upload", uploadRoute);
 app.use("/places", placesRoute);
+app.use("/all-places", allPlaceRoute);
 
 // only for testing purpose
 app.get("/test", (req, res) => {

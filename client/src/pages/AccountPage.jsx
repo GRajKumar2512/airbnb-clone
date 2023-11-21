@@ -10,6 +10,7 @@ const AccountPage = () => {
 
   if (!ready) return "Loading...";
 
+  // button animation
   function linkClasses(type = null) {
     let classes = "py-2 px-6 inline-flex gap-1 rounded-full";
 
@@ -21,6 +22,7 @@ const AccountPage = () => {
 
     return classes;
   }
+
   return (
     <div>
       <nav className="w-full flex justify-center my-8 gap-2">

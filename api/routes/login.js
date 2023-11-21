@@ -10,8 +10,6 @@ router.post("/", async (req, res) => {
 
   try {
     const existingUser = await User.findOne({ email });
-    console.log(`provided: ${email} with ${password}`);
-    console.log(existingUser);
 
     if (!existingUser)
       return res.json({ message: "email doesn't exist, register instead" });
