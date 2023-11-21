@@ -16,6 +16,8 @@ const PlacesPage = () => {
     getPlaces();
   }, []);
 
+  if (!places) return "loading...";
+
   return (
     <>
       {action !== "new" && (

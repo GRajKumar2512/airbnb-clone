@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const IndexPage = () => {
   const [allPlaces, setAllPlaces] = useState([]);
@@ -14,11 +15,14 @@ const IndexPage = () => {
     getPlaces();
   }, []);
 
+  if (!allPlaces) return "loading...";
+
   return (
     <div className="mt-4 mx-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
       {allPlaces.length > 0 &&
         allPlaces.map((place, index) => (
-          <div
+          <Link
+            to={`/place/${place._id}`}
             className="p-2 flex flex-col items-start cursor-pointer custom__animate"
             key={`${place.title}-${index}`}
           >
@@ -37,7 +41,7 @@ const IndexPage = () => {
                 <span className="font-semibold">Rs {place.price}</span> night
               </p>
             </div>
-          </div>
+          </Link>
         ))}
     </div>
   );
