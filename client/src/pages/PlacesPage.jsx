@@ -51,7 +51,7 @@ const PlacesPage = () => {
                 <Link
                   key={place.title}
                   to={`/account/places/edit/${place._id}`}
-                  className="flex gap-4 cursor-pointer bg-gray-100 p-4 rounded-xl"
+                  className="flex gap-4 cursor-pointer  p-4 rounded-xl my-2 hover:bg-gray-100 bg-white"
                 >
                   <div className="flex h-32 w-32 bg-gray-300 shrink-0">
                     {place.photos.length > 0 && (

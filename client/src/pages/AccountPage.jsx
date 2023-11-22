@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import ProfilePage from "./ProfilePage";
 import { UserContext } from "../UserContext";
 import PlacesPage from "./PlacesPage";
+import BookingsPage from "./BookingsPage";
 
 const AccountPage = () => {
   const { ready, user } = useContext(UserContext);
@@ -73,6 +74,7 @@ const AccountPage = () => {
         </Link>
       </nav>
       {subpage === undefined && <ProfilePage />}
+      {subpage === "bookings" && <BookingsPage />}
       {subpage === "places" && <PlacesPage />}
     </div>
   );
